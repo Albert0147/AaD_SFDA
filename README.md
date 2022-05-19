@@ -1,6 +1,6 @@
 ### Attracting and Dispersing: A Simple Approach for Source-free Domain Adaptation
 
-##### _Shiqi Yang, Yaxing Wang, Kai Wang, Shangling Jui and Joost van de Weijer
+##### _Shiqi Yang, Yaxing Wang, Kai Wang, Shangling Jui and Joost van de Weijer_
 
 ------------
 Code for our paper **'Attracting and Dispersing: A Simple Approach for Source-free Domain Adaptation'** 
