@@ -1,9 +1,9 @@
-### Local Prediction Aggregation: A Frustratingly Easy Source-free Domain Adaptation Method
+### Attracting and Dispersing: A Simple Approach for Source-free Domain Adaptation
 
-##### _Shiqi Yang, Yaxing Wang, Kai Wang, Joost van de Weijer and Shangling Jui_
+##### _Shiqi Yang, Yaxing Wang, Kai Wang, Shangling Jui and Joost van de Weijer
 
 ------------
-Code for our paper **'Local Prediction Aggregation: A Frustratingly Easy Source-free Domain Adaptation Method'** 
+Code for our paper **'Attracting and Dispersing: A Simple Approach for Source-free Domain Adaptation'** 
 
 [[arxiv]](https://arxiv.org/abs/2205.04183)
 
