@@ -1,4 +1,4 @@
-### Attracting and Dispersing: A Simple Approach for Source-free Domain Adaptation
+## Attracting and Dispersing: A Simple Approach for Source-free Domain Adaptation
 
 ##### _Shiqi Yang, Yaxing Wang, Kai Wang, Shangling Jui and Joost van de Weijer_
 
@@ -7,11 +7,13 @@ Code for our paper **'Attracting and Dispersing: A Simple Approach for Source-fr
 
 [[arxiv]](https://arxiv.org/abs/2205.04183)
 
-We provide a _surprisingly simple_ solution for source-free domain adaptation with only two dot product terms:
+
+### Contributions
+- We provide a _surprisingly simple_ solution for source-free domain adaptation with only two dot product terms:
 
 ![img](./AaD.png)
 
-And we can relate several methods in domain adaptation, source-free domain adaptation and contrastive learning via the perspective of discriminability and diversity:
+- And we can relate several methods in domain adaptation, source-free domain adaptation and contrastive learning via the perspective of discriminability and diversity:
 
 ![img2](./relations.png)
 
