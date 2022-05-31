@@ -9,7 +9,7 @@ Code for our paper **'Attracting and Dispersing: A Simple Approach for Source-fr
 
 
 ### Contributions
-- We provide a _surprisingly simple_ solution for source-free domain adaptation with only two dot product terms:
+- We provide a _surprisingly simple_ solution for source-free domain adaptation, which is an upperbound of the proposed clustering objective:
 
 ![img](./AaD.png)
 
