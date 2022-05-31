@@ -11,5 +11,9 @@ We provide a _surprisingly simple_ solution for source-free domain adaptation wi
 
 ![img](./AaD.png)
 
+And we can relate several methods in domain adaptation, source-free domain adaptation and contrastive learning via the perspective of discriminability and diversity:
+
+![img2](./relations.png)
+
 
 **We will release the code if accepted.**
