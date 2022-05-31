@@ -5,7 +5,7 @@
 ------------
 Code for our paper **'Attracting and Dispersing: A Simple Approach for Source-free Domain Adaptation'** 
 
-[[arxiv]](https://arxiv.org/abs/2205.04183)
+[[project]]([https://arxiv.org/abs/2205.04183](https://sites.google.com/view/aad-sfda))[[arxiv]](https://arxiv.org/abs/2205.04183)
 
 
 ### Contributions
