@@ -14,11 +14,7 @@ from sklearn.neighbors import KNeighborsClassifier
 
 
 class FocalLabelSmooth(nn.Module):
-    def __init__(self,
-                 num_classes,
-                 epsilon=0.1,
-                 use_gpu=True,
-                 size_average=True):
+    def __init__(self, num_classes, epsilon=0.1, use_gpu=True, size_average=True):
         super(FocalLabelSmooth, self).__init__()
         self.num_classes = num_classes
         self.epsilon = epsilon
@@ -29,13 +25,14 @@ class FocalLabelSmooth(nn.Module):
     def forward(self, inputs, targets):
         log_probs = self.softmax(inputs)
 
-        tmp = log_probs[range(log_probs.shape[0]), targets] # batch
-        if self.use_gpu: targets = targets.cuda()
-        #targets = (1 - self.epsilon) * targets + self.epsilon / self.num_classes
+        tmp = log_probs[range(log_probs.shape[0]), targets]  # batch
+        if self.use_gpu:
+            targets = targets.cuda()
+        # targets = (1 - self.epsilon) * targets + self.epsilon / self.num_classes
         if self.size_average:
-            loss = (- (1-tmp)**2 * torch.log(tmp)).mean(0).sum()
+            loss = (-((1 - tmp) ** 2) * torch.log(tmp)).mean(0).sum()
         else:
-            loss = (-(1 - tmp)**2 * torch.log(tmp)).sum(1)
+            loss = (-((1 - tmp) ** 2) * torch.log(tmp)).sum(1)
         return loss
 
 
@@ -46,13 +43,8 @@ def Entropy(input_):
     return entropy
 
 
-
 class CrossEntropyLabelSmooth(nn.Module):
-    def __init__(self,
-                 num_classes,
-                 epsilon=0.1,
-                 use_gpu=True,
-                 size_average=True):
+    def __init__(self, num_classes, epsilon=0.1, use_gpu=True, size_average=True):
         super(CrossEntropyLabelSmooth, self).__init__()
         self.num_classes = num_classes
         self.epsilon = epsilon
@@ -63,11 +55,11 @@ class CrossEntropyLabelSmooth(nn.Module):
     def forward(self, inputs, targets):
         log_probs = self.logsoftmax(inputs)
         targets = torch.zeros(log_probs.size()).scatter_(
-            1,
-            targets.unsqueeze(1).cpu(), 1)
-        if self.use_gpu: targets = targets.cuda()
-        targets = (1 -
-                   self.epsilon) * targets + self.epsilon / self.num_classes
+            1, targets.unsqueeze(1).cpu(), 1
+        )
+        if self.use_gpu:
+            targets = targets.cuda()
+        targets = (1 - self.epsilon) * targets + self.epsilon / self.num_classes
         if self.size_average:
             loss = (-targets * log_probs).mean(0).sum()
         else:
@@ -85,7 +77,7 @@ def cal_acc_(loader, netF, netC):
             labels = data[1]
             inputs = inputs.cuda()
             output_f = netF.forward(inputs)  # a^t
-            outputs=netC(output_f)
+            outputs = netC(output_f)
             if start_test:
                 all_output = outputs.float().cpu()
                 all_label = labels.float()
@@ -94,17 +86,14 @@ def cal_acc_(loader, netF, netC):
                 all_output = torch.cat((all_output, outputs.float().cpu()), 0)
                 all_label = torch.cat((all_label, labels.float()), 0)
     _, predict = torch.max(all_output, 1)
-    accuracy = torch.sum(
-        torch.squeeze(predict).float() == all_label).item() / float(
-            all_label.size()[0])
-    mean_ent = torch.mean(Entropy(
-        nn.Softmax(dim=1)(all_output))).cpu().data.item()
+    accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(
+        all_label.size()[0]
+    )
+    mean_ent = torch.mean(Entropy(nn.Softmax(dim=1)(all_output))).cpu().data.item()
     return accuracy, mean_ent
 
 
-
-
-'''def image_train(resize_size=256, crop_size=224):
+"""def image_train(resize_size=256, crop_size=224):
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
     return transforms.Compose([
@@ -112,44 +101,55 @@ def cal_acc_(loader, netF, netC):
         transforms.RandomHorizontalFlip(),
         transforms.RandomResizedCrop(crop_size),
         transforms.ToTensor(), normalize
-    ])'''
+    ])"""
 
 
 def image_train(resize_size=256, crop_size=224):
-    return transforms.Compose([
-        transforms.Resize((resize_size, resize_size)),
-        transforms.RandomCrop(crop_size),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-        torchvision.transforms.Normalize([0.485, 0.456, 0.406],
-                                         [0.229, 0.224, 0.225])
-    ])
+    return transforms.Compose(
+        [
+            transforms.Resize((resize_size, resize_size)),
+            transforms.RandomCrop(crop_size),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            torchvision.transforms.Normalize(
+                [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
+            ),
+        ]
+    )
 
 
 def image_target(resize_size=256, crop_size=224):
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225])
-    return transforms.Compose([
-        transforms.Resize((resize_size, resize_size)),
-        transforms.RandomCrop(224),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(), normalize
-    ])
+    normalize = transforms.Normalize(
+        mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+    )
+    return transforms.Compose(
+        [
+            transforms.Resize((resize_size, resize_size)),
+            transforms.RandomCrop(224),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            normalize,
+        ]
+    )
 
 
 def image_shift(resize_size=256, crop_size=224):
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225])
-    return transforms.Compose([
-        transforms.Resize((resize_size, resize_size)),
-        transforms.ColorJitter(0.2, 0.2, 0.2, 0.1),
-        transforms.RandomCrop(224),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(), normalize
-    ])
+    normalize = transforms.Normalize(
+        mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+    )
+    return transforms.Compose(
+        [
+            transforms.Resize((resize_size, resize_size)),
+            transforms.ColorJitter(0.2, 0.2, 0.2, 0.1),
+            transforms.RandomCrop(224),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            normalize,
+        ]
+    )
 
 
-'''def image_test(resize_size=256, crop_size=224):
+"""def image_test(resize_size=256, crop_size=224):
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
     start_first = 0
@@ -160,18 +160,21 @@ def image_shift(resize_size=256, crop_size=224):
         transforms.Resize((resize_size, resize_size)),
         transforms.CenterCrop(224),
         transforms.ToTensor(), normalize
-    ])'''
+    ])"""
 
 
 def image_test(resize_size=256, crop_size=224):
-    return transforms.Compose([
-        transforms.Resize((resize_size, resize_size)),
-        transforms.CenterCrop(crop_size),
-        # transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-        torchvision.transforms.Normalize([0.485, 0.456, 0.406],
-                                         [0.229, 0.224, 0.225])
-    ])
+    return transforms.Compose(
+        [
+            transforms.Resize((resize_size, resize_size)),
+            transforms.CenterCrop(crop_size),
+            # transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            torchvision.transforms.Normalize(
+                [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
+            ),
+        ]
+    )
 
 
 def make_dataset(image_list, labels):
@@ -180,42 +183,39 @@ def make_dataset(image_list, labels):
         images = [(image_list[i].strip(), labels[i, :]) for i in range(len_)]
     else:
         if len(image_list[0].split()) > 2:
-            images = [(val.split()[0],
-                       np.array([int(la) for la in val.split()[1:]]))
-                      for val in image_list]
+            images = [
+                (val.split()[0], np.array([int(la) for la in val.split()[1:]]))
+                for val in image_list
+            ]
         else:
-            images = [(val.split()[0], int(val.split()[1]))
-                      for val in image_list]
+            images = [(val.split()[0], int(val.split()[1])) for val in image_list]
     return images
 
 
 def rgb_loader(path):
-    with open(path, 'rb') as f:
+    with open(path, "rb") as f:
         with Image.open(f) as img:
-            return img.convert('RGB')
+            return img.convert("RGB")
 
 
 def l_loader(path):
-    with open(path, 'rb') as f:
+    with open(path, "rb") as f:
         with Image.open(f) as img:
-            return img.convert('L')
+            return img.convert("L")
 
 
 class ImageList(Dataset):
-    def __init__(self,
-                 image_list,
-                 labels=None,
-                 transform=None,
-                 target_transform=None,
-                 mode='RGB'):
+    def __init__(
+        self, image_list, labels=None, transform=None, target_transform=None, mode="RGB"
+    ):
         imgs = make_dataset(image_list, labels)
 
         self.imgs = imgs
         self.transform = transform
         self.target_transform = target_transform
-        if mode == 'RGB':
+        if mode == "RGB":
             self.loader = rgb_loader
-        elif mode == 'L':
+        elif mode == "L":
             self.loader = l_loader
 
     def __getitem__(self, index):
@@ -235,68 +235,115 @@ class ImageList(Dataset):
 
 def office_load(args):
     train_bs = args.batch_size
+    if args.office31 == True:  # and not args.home and not args.visda:
+        ss = args.dset.split("2")[0]
+        tt = args.dset.split("2")[1]
+        if ss == "a":
+            s = "amazon"
+        elif ss == "d":
+            s = "dslr"
+        elif ss == "w":
+            s = "webcam"
+
+        if tt == "a":
+            t = "amazon"
+        elif tt == "d":
+            t = "dslr"
+        elif tt == "w":
+            t = "webcam"
+
+        s_tr, s_ts = "./data/office/{}_list.txt".format(
+            s
+        ), "./data/office/{}_list.txt".format(s)
+
+        txt_src = open(s_tr).readlines()
+        dsize = len(txt_src)
+        """tv_size = int(1.0 * dsize)
+        print(dsize, tv_size, dsize - tv_size)
+        s_tr, s_ts = torch.utils.data.random_split(txt_src,
+                                                   [tv_size, dsize - tv_size])"""
+        s_tr = txt_src
+        s_ts = txt_src
+
+        t_tr, t_ts = "./data/office/{}_list.txt".format(
+            t
+        ), "./data/office/{}_list.txt".format(t)
+        prep_dict = {}
+        prep_dict["source"] = image_train()
+        prep_dict["target"] = image_target()
+        prep_dict["test"] = image_test()
+        train_source = ImageList(s_tr, transform=prep_dict["source"])
+        test_source = ImageList(s_tr, transform=prep_dict["source"])
+        train_target = ImageList(open(t_tr).readlines(), transform=prep_dict["target"])
+        test_target = ImageList(open(t_ts).readlines(), transform=prep_dict["test"])
     if args.home == True:
-        ss = args.dset.split('2')[0]
-        tt = args.dset.split('2')[1]
-        if ss == 'a':
-            s = 'Art'
-        elif ss == 'c':
-            s = 'Clipart'
-        elif ss == 'p':
-            s = 'Product'
-        elif ss == 'r':
-            s = 'Real_World'
+        ss = args.dset.split("2")[0]
+        tt = args.dset.split("2")[1]
+        if ss == "a":
+            s = "Art"
+        elif ss == "c":
+            s = "Clipart"
+        elif ss == "p":
+            s = "Product"
+        elif ss == "r":
+            s = "Real_World"
 
-        if tt == 'a':
-            t = 'Art'
-        elif tt == 'c':
-            t = 'Clipart'
-        elif tt == 'p':
-            t = 'Product'
-        elif tt == 'r':
-            t = 'Real_World'
+        if tt == "a":
+            t = "Art"
+        elif tt == "c":
+            t = "Clipart"
+        elif tt == "p":
+            t = "Product"
+        elif tt == "r":
+            t = "Real_World"
 
-        s_tr, s_ts = './data/office-home/{}.txt'.format(
-            s), './data/office-home/{}.txt'.format(s)
+        s_tr, s_ts = "./data/office-home/{}.txt".format(
+            s
+        ), "./data/office-home/{}.txt".format(s)
 
         txt_src = open(s_tr).readlines()
         s_tr = txt_src
         s_ts = txt_src
 
-        t_tr, t_ts = './data/office-home/{}.txt'.format(
-            t), './data/office-home/{}.txt'.format(t)
+        t_tr, t_ts = "./data/office-home/{}.txt".format(
+            t
+        ), "./data/office-home/{}.txt".format(t)
         prep_dict = {}
-        prep_dict['source'] = image_train()
-        prep_dict['target'] = image_target()
-        prep_dict['test'] = image_test()
-        train_source = ImageList(s_tr,
-                                 transform=prep_dict['source'])
-        test_source = ImageList(s_ts,
-                                transform=prep_dict['source'])
-        train_target = ImageList(open(t_tr).readlines(),
-                                 transform=prep_dict['target'])
-        test_target = ImageList(open(t_ts).readlines(),
-                                transform=prep_dict['test'])
+        prep_dict["source"] = image_train()
+        prep_dict["target"] = image_target()
+        prep_dict["test"] = image_test()
+        train_source = ImageList(s_tr, transform=prep_dict["source"])
+        test_source = ImageList(s_ts, transform=prep_dict["source"])
+        train_target = ImageList(open(t_tr).readlines(), transform=prep_dict["target"])
+        test_target = ImageList(open(t_ts).readlines(), transform=prep_dict["test"])
 
     dset_loaders = {}
-    dset_loaders["source_tr"] = DataLoader(train_source,
-                                           batch_size=train_bs,
-                                           shuffle=True,
-                                           num_workers=args.worker,
-                                           drop_last=False)
-    dset_loaders["source_te"] = DataLoader(test_source,
-                                           batch_size=train_bs * 2,#2
-                                           shuffle=True,
-                                           num_workers=args.worker,
-                                           drop_last=False)
-    dset_loaders["target"] = DataLoader(train_target,
-                                        batch_size=train_bs,
-                                        shuffle=True,
-                                        num_workers=args.worker,
-                                        drop_last=False)
-    dset_loaders["test"] = DataLoader(test_target,
-                                      batch_size=train_bs * 3,#3
-                                      shuffle=True,
-                                      num_workers=args.worker,
-                                      drop_last=False)
+    dset_loaders["source_tr"] = DataLoader(
+        train_source,
+        batch_size=train_bs,
+        shuffle=True,
+        num_workers=args.worker,
+        drop_last=False,
+    )
+    dset_loaders["source_te"] = DataLoader(
+        test_source,
+        batch_size=train_bs * 2,  # 2
+        shuffle=True,
+        num_workers=args.worker,
+        drop_last=False,
+    )
+    dset_loaders["target"] = DataLoader(
+        train_target,
+        batch_size=train_bs,
+        shuffle=True,
+        num_workers=args.worker,
+        drop_last=False,
+    )
+    dset_loaders["test"] = DataLoader(
+        test_target,
+        batch_size=train_bs * 3,  # 3
+        shuffle=True,
+        num_workers=args.worker,
+        drop_last=False,
+    )
     return dset_loaders

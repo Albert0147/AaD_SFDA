@@ -108,9 +108,7 @@ def test_target(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Domain Adaptation on office-home dataset"
-    )
+    parser = argparse.ArgumentParser(description="Domain Adaptation on office dataset")
     parser.add_argument(
         "--gpu_id", type=str, nargs="?", default="0", help="device id to run"
     )
@@ -130,7 +128,7 @@ if __name__ == "__main__":
     parser.add_argument("--classifier", type=str, default="bn", choices=["ori", "bn"])
     parser.add_argument("--smooth", type=float, default=0.1)
     parser.add_argument("--output", type=str, default="office31_weight")
-    parser.add_argument("--home", action="store_true")
+    # parser.add_argument("--home", action="store_true")
     parser.add_argument("--office31", action="store_true", default=True)
     parser.add_argument("--visda", action="store_true")
     parser.add_argument("--use_c", action="store_true", default=True)
@@ -152,16 +150,7 @@ if __name__ == "__main__":
         os.system("mkdir -p " + args.output_dir)
     if not osp.exists(args.output_dir):
         os.mkdir(args.output_dir)
-    """if not osp.exists(osp.join(args.output_dir + '/source_F.pt')):
-        args.out_file = open(osp.join(args.output_dir, 'log_src_val.txt'), 'w')
-        args.out_file.write(print_args(args) + '\n')
-        args.out_file.flush()
-        train_source(args)
-        test_target(args)
-"""
 
-    if args.home:
-        task = ["c", "a", "p", "r"]
     if args.office31:
         task = ["a", "d", "w"]
     task_s = args.dset.split("2")[0]
