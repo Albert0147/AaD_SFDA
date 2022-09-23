@@ -333,7 +333,7 @@ def train_target(args):
 
         loss = torch.mean(
             (F.kl_div(softmax_out_un, score_near, reduction="none").sum(-1)).sum(1)
-        )
+        ) # Equal to dot product
 
         mask = torch.ones((inputs_test.shape[0], inputs_test.shape[0]))
         diag_num = torch.diag(mask)
