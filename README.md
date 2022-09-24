@@ -20,6 +20,7 @@ Code for our paper **'Attracting and Dispersing: A Simple Approach for Source-fr
 
 ### code on VisDA
 **We use pytoch 1.3 with cuda 10.0**
+
 **Attention: Please note that the kl_div in pytorch equals to dot product if there is no log for the input.**
 
 
