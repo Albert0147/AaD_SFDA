@@ -20,6 +20,8 @@ Code for our paper **'Attracting and Dispersing: A Simple Approach for Source-fr
 
 ### code on VisDA
 **We use pytoch 1.3 with cuda 10.0**
+**Attention: Please note that the kl_div in pytorch equals to dot product if there is no log for the input.**
+
 
 Download VisDA dataset and change the path in the code to it.
 First train model on Source domain, directly run src_pretrain.py
@@ -29,4 +31,3 @@ Source-free domain adaptation, directly run tar_adaptation.py
 
 For computing SND, you can use the file snd.py (code is from [SND](https://github.com/VisionLearningGroup/SND)), in the paper we compute SND after only training for a few epochs (~5 on visda).
 
-**Attention: Please note that the kl_div in pytorch equals to dot product if there is no log for the input.**
