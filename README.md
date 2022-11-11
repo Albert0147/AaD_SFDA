@@ -1,4 +1,4 @@
-## (NeurIPS 2022) Attracting and Dispersing: A Simple Approach for Source-free Domain Adaptation
+## (NeurIPS 2022 **Spotlight**) Attracting and Dispersing: A Simple Approach for Source-free Domain Adaptation
 
 ##### _Shiqi Yang, Yaxing Wang, Kai Wang, Shangling Jui and Joost van de Weijer_
 
