@@ -28,7 +28,7 @@ Download VisDA dataset and change the path in the code to it.
 First train model on Source domain, directly run src_pretrain.py
 Source-free domain adaptation, directly run tar_adaptation.py
 
-**For more datasets, you can insert the core part (loss computing starting in [Line 297](https://github.com/Albert0147/AaD_SFDA/blob/9a4c8bf9bfb6ab0800be55163c82d8ee71e7e6be/tar_adaptation.py#L297) in tar_adaptation.py) into code of our [NRC](https://github.com/Albert0147/NRC_SFDA) (NeurIPS 2021)**
+**For more datasets, you can insert the core part (loss computing starting in [Line 297](https://github.com/Albert0147/AaD_SFDA/blob/9a4c8bf9bfb6ab0800be55163c82d8ee71e7e6be/tar_adaptation.py#L297) in tar_adaptation.py) into code of our [NRC](https://github.com/Albert0147/NRC_SFDA) (NeurIPS 2021) or [SHOT](https://github.com/tim-learn/SHOT) (ICML 2020)**
 
 For computing SND, you can use the file snd.py (code is from [SND](https://github.com/VisionLearningGroup/SND)), in the paper we compute SND after only training for a few epochs (~5 on visda).
 
