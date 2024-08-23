@@ -32,3 +32,6 @@ Source-free domain adaptation, directly run tar_adaptation.py
 
 For computing SND, you can use the file snd.py (code is from [SND](https://github.com/VisionLearningGroup/SND)), in the paper we compute SND after only training for a few epochs (~5 on visda).
 
+### LICENSE
+
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.en)
